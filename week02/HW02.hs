@@ -61,7 +61,7 @@ allCodes len
   | len <= 0 = []
   | len == 1 = map (:[]) colors
   | otherwise =
-    concatMap (\color -> map (color:) $ allCodes (len - 1)) colors
+      concatMap (\color -> map (color:) $ allCodes (len - 1)) colors
 
 -- Exercise 7 -----------------------------------------
 
