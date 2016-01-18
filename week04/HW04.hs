@@ -77,7 +77,8 @@ instance Num a => Num (Poly a) where
 
 applyP :: Num a => Poly a -> a -> a
 applyP (P coefs) toApply =
-  sum $ zipWith (\coef deg -> toApply ^ deg * coef) coefs ([0..] :: [Int])
+  sum $ zipWith (\coef -> (coef*).(toApply^)) coefs ([0..] :: [Int])
+  -- The lambda is equivalent to (\coef deg -> toApply ^ deg * coef)
 
 -- Exercise 8 -----------------------------------------
 
