@@ -50,7 +50,7 @@ getBadTs victimF tF = do
   ts <- parseFile tF :: IO (Maybe [Transaction])
   let victimSet = maybe Set.empty Set.fromList victims
   if Set.null victimSet
-    then return (Just [])
+    then return $ Just []
     else return $ filter (\t -> Set.member (tid t) victimSet) <$> ts
 
 -- Exercise 5 -----------------------------------------
@@ -62,12 +62,12 @@ handleT t = Map.alter (update . amount $ t) (to t) .
     update :: Integer -> Maybe Integer -> Maybe Integer
     update delta = Just . maybe delta (delta+)
 
-updateBalaceFromT :: Map String Integer -> [Transaction] -> Map String Integer
+updateBalaceFromTs :: Map String Integer -> [Transaction] -> Map String Integer
 -- Filter accounts with 0 balance.
-updateBalaceFromT balance ts = Map.filter (/=0) $ foldr handleT balance ts
+updateBalaceFromTs balance ts = Map.filter (/=0) $ foldr handleT balance ts
 
 getFlow :: [Transaction] -> Map String Integer
-getFlow = updateBalaceFromT Map.empty
+getFlow = updateBalaceFromTs Map.empty
 
 -- Exercise 6 -----------------------------------------
 
@@ -96,7 +96,7 @@ undoTs balance tIds
                                                    , tid = tid
                                                    }
     newTs = zipWith3 newT payers payees tIds
-    newBalance = updateBalaceFromT balance newTs
+    newBalance = updateBalaceFromTs balance newTs
 
 -- Exercise 8 -----------------------------------------
 
@@ -110,7 +110,8 @@ doEverything :: FilePath -> FilePath -> FilePath -> FilePath -> FilePath
 doEverything dog1 dog2 trans vict fids out = do
   key <- getSecret dog1 dog2
   decryptWithKey key vict
-  mts <- getBadTs vict trans
+  let decryptedVict = take (length vict - 4) vict 
+  mts <- getBadTs decryptedVict trans
   case mts of
     Nothing -> error "No Transactions"
     Just ts -> do
