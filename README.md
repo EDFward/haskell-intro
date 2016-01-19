@@ -4,7 +4,14 @@ Learn Haskell by [CIS 194: Introduction to Haskell (Spring 2015)](https://www.se
 
 Following are my notes for each week's lectures and homeworks.
 
-### Week 1: Introduction to Haskell
+1. [Introduction to Haskell](#week-1-introduction-to-haskell)
+1. [Polymorphism and Functional Programming](#week-2-polymorphism-and-functional-programming)
+1. [Algebraic Data Types](#week-3-algebraic-data-types)
+1. [Type Classes](#week-4-type-classes)
+1. [IO](#week-5-io)
+1. [Lazy Evaluation](#week-6-lazy-evaluation)
+
+### Week 1 Introduction to Haskell
 
 This lecture mainly focuses on high-level introduction on Haskell's features and helps familiarize students with the syntax. The homework serves the same purpose so it's quite straightforward.
 
@@ -114,7 +121,7 @@ The constraint of `Enum a` is necessary.
 
 from [this Stack Overflow answer](http://stackoverflow.com/questions/1533585/why-does-haskell-interpret-my-num-type-as-an-enum).
 
-### Week 5 I/O
+### Week 5 IO
 
 As the name suggests, this week is about I/O, in other words, Haskell with side effects. Also introduced are *record syntax*, `ByteStrings`, and `IO` as a `Functor`, all illustrated by following 3 lines :)
 
@@ -139,7 +146,9 @@ Strictness is also introduced, since it will force a value to be evaluated thus 
 References, worth reading:
 
 - [HaskellWiki: Stack overflow](https://wiki.haskell.org/Stack_overflow). It talks about *Weak Head Normal Form* (WHNF) in pattern matching driven evaluation, and newbie stack overflowing code (like `foldr` and `foldr` for summing up), more importantly, the takeaway:
+
 > A function strict* in its second argument will always require linear stack space with foldr, so foldl' should be used instead in that case. If the function is lazy/non-strict in its second argument we should use foldr to 1) support infinite lists and 2) to allow a streaming use of the input list where only part of it needs to be in memory at a time.
+
 - [HaskellWiki: Fold](https://wiki.haskell.org/Fold) and [HaskellWiki: Foldr Foldl Foldl'](https://wiki.haskell.org/Foldr_Foldl_Foldl'). The *List folds as structural transformations* section in the first article is interesting.
 
 Another topic is about profiling, and the usual workflow would be
@@ -152,7 +161,7 @@ $ hp2ps -c HW06.hp
 $ ./HW06 +RTS -s
 ```
 
-The homework involves working with infinite lists (call them *Streams*). Most of them are like brain teasers, thus are funny to solve. But it also demonstrates the significance of strict evaluation. Following are two code snippets, in which we can see the huge difference in terms of performance ().
+The homework involves working with infinite lists (call them *Streams*). Most of them are like brain teasers, thus are funny to solve. But it also demonstrates the significance of strict evaluation. Following are two code snippets, in which we can see the huge difference in terms of performance.
 
 ```haskell
 {-# LANGUAGE BangPatterns #-}
