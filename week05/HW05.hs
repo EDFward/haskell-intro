@@ -55,16 +55,16 @@ getBadTs victimF tF = do
 
 -- Exercise 5 -----------------------------------------
 
-handleT :: Transaction -> Map String Integer -> Map String Integer
-handleT t = Map.alter (update . amount $ t) (to t) .
-            Map.alter (update . negate . amount $ t) (from t)
+-- Update balance with a list of transactions. Accounts with 0
+-- balance are excluded.
+updateBalaceFromTs :: Map String Integer -> [Transaction] -> Map String Integer
+updateBalaceFromTs balance ts = Map.filter (/=0) $ foldr handleT balance ts
   where
     update :: Integer -> Maybe Integer -> Maybe Integer
     update delta = Just . maybe delta (delta+)
-
-updateBalaceFromTs :: Map String Integer -> [Transaction] -> Map String Integer
--- Filter accounts with 0 balance.
-updateBalaceFromTs balance ts = Map.filter (/=0) $ foldr handleT balance ts
+    handleT :: Transaction -> Map String Integer -> Map String Integer
+    handleT t = Map.alter (update . amount $ t) (to t) .
+                Map.alter (update . negate . amount $ t) (from t)
 
 getFlow :: [Transaction] -> Map String Integer
 getFlow = updateBalaceFromTs Map.empty
@@ -110,7 +110,7 @@ doEverything :: FilePath -> FilePath -> FilePath -> FilePath -> FilePath
 doEverything dog1 dog2 trans vict fids out = do
   key <- getSecret dog1 dog2
   decryptWithKey key vict
-  let decryptedVict = take (length vict - 4) vict 
+  let decryptedVict = take (length vict - 4) vict
   mts <- getBadTs decryptedVict trans
   case mts of
     Nothing -> error "No Transactions"

@@ -23,6 +23,7 @@ Other small notes:
 - Avoid partial functions like `head` or `tail` since they may crash (or worse, recurse infinitely) on some inputs
 - Sometimes explicit recursion patterns could easily be replaced with functions like `zipWith`, `zip`, `concatMap` and so on
 - [Does Haskell have tail-recursive optimization?](http://stackoverflow.com/questions/13042353/does-haskell-have-tail-recursive-optimization) from Stack Overflow
+- [foldl is tail recursive, so how come foldr runs faster than foldl?](http://stackoverflow.com/questions/3429634/foldl-is-tail-recursive-so-how-come-foldr-runs-faster-than-foldl) from Stack Overflow - In a word, **`foldr` is often more efficient for lazy evaluation**
 
 ### Week 3 Algebraic Data Types
 
@@ -112,3 +113,15 @@ The constraint of `Enum a` is necessary.
 > `[0..]` is syntactic sugar for `enumFrom 0`, defined in class `Enum`. Because you want to generate a list of `a`s with `[0..]` the compiler demands `a` to be in class `Enum`.
 
 from [this Stack Overflow answer](http://stackoverflow.com/questions/1533585/why-does-haskell-interpret-my-num-type-as-an-enum).
+
+### Week 5 I/O
+
+As the name suggests, this week is about I/O, in other words, Haskell with side effects. Also introduced are *record syntax*, `ByteStrings`, and `IO` as a `Functor`, all illustrated by following 3 lines :)
+
+```haskell
+data D = C { field1 :: T1, field2 :: T2, field3 :: T3 } -- 1
+import qualified Data.ByteString as BS                  -- 2
+getWords' = BS.split 32 <$> BS.getLine                  -- 3
+```
+
+On the other hand, the assignment requires substantially more efforts than previous. I think it's because this time we are really using Haskell for real world (-ish) jobs - read & process JSON file, use set / map and implement not-so-trivial algorithms. I spend roughly 3 hours on `undoTs` function and in the end it's quite rewarding to see it works with reasonable readability and modularization (unabashed).
