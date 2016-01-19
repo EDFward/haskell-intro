@@ -23,7 +23,7 @@ Other small notes:
 - Avoid partial functions like `head` or `tail` since they may crash (or worse, recurse infinitely) on some inputs
 - Sometimes explicit recursion patterns could easily be replaced with functions like `zipWith`, `zip`, `concatMap` and so on
 - [Does Haskell have tail-recursive optimization?](http://stackoverflow.com/questions/13042353/does-haskell-have-tail-recursive-optimization) from Stack Overflow
-- [foldl is tail recursive, so how come foldr runs faster than foldl?](http://stackoverflow.com/questions/3429634/foldl-is-tail-recursive-so-how-come-foldr-runs-faster-than-foldl) from Stack Overflow - In a word, **`foldr` is often more efficient for lazy evaluation**
+- [foldl is tail recursive, so how come foldr runs faster than foldl?](http://stackoverflow.com/questions/3429634/foldl-is-tail-recursive-so-how-come-foldr-runs-faster-than-foldl) from Stack Overflow - for details, check notes for week 6
 
 ### Week 3 Algebraic Data Types
 
@@ -125,3 +125,51 @@ getWords' = BS.split 32 <$> BS.getLine                  -- 3
 ```
 
 On the other hand, the assignment requires substantially more efforts than previous. I think it's because this time we are really using Haskell for real world (-ish) jobs - read & process JSON file, use set / map and implement not-so-trivial algorithms. I spend roughly 3 hours on `undoTs` function and in the end it's quite rewarding to see it works with reasonable readability and modularization (unabashed).
+
+### Week 6 Lazy Evaluation
+
+Being lazy is not so unfamiliar to me :) However, in Haskell there is a very important rule for lazy evaluation: **Pattern matching drives evaluation**.
+
+> The slogan to remember is *"pattern matching drives evaluation"*. To reiterate the important points:
+1. Expressions are only evaluated when pattern-matched
+2. ...only as far as necessary for the match to proceed, and no farther!
+
+Strictness is also introduced, since it will force a value to be evaluated thus eliminating additional thunks. Both `seq` function or *Bang Patterns* could be used to achieve this.
+
+References, worth reading:
+
+- [HaskellWiki: Stack overflow](https://wiki.haskell.org/Stack_overflow). It talks about *Weak Head Normal Form* (WHNF) in pattern matching driven evaluation, and newbie stack overflowing code (like `foldr` and `foldr` for summing up), more importantly, the takeaway:
+> A function strict* in its second argument will always require linear stack space with foldr, so foldl' should be used instead in that case. If the function is lazy/non-strict in its second argument we should use foldr to 1) support infinite lists and 2) to allow a streaming use of the input list where only part of it needs to be in memory at a time.
+- [HaskellWiki: Fold](https://wiki.haskell.org/Fold) and [HaskellWiki: Foldr Foldl Foldl'](https://wiki.haskell.org/Foldr_Foldl_Foldl'). The *List folds as structural transformations* section in the first article is interesting.
+
+Another topic is about profiling, and the usual workflow would be
+```bash
+$ ghc HW06.hs -rtsopts -fforce-recomp -main-is HW06
+# Generate heap profile.
+$ ./HW06 +RTS -s -h -i0.001
+$ hp2ps -c HW06.hp
+# Or show memory / time usage directly in terminal.
+$ ./HW06 +RTS -s
+```
+
+The homework involves working with infinite lists (call them *Streams*). Most of them are like brain teasers, thus are funny to solve. But it also demonstrates the significance of strict evaluation. Following are two code snippets, in which we can see the huge difference in terms of performance ().
+
+```haskell
+{-# LANGUAGE BangPatterns #-}
+
+{- Total Memory in use 223 MB, in 0.627s -}
+minMaxSlow :: [Int] -> Maybe (Int, Int)
+minMaxSlow [] = Nothing   -- no min or max if there are no elements
+minMaxSlow xs = Just (minimum xs, maximum xs)
+
+{- Total Memory in use 1 MB, in 0.093s -}
+minMax :: [Int] -> Maybe (Int, Int)
+minMax = foldl' compare' Nothing
+  where
+    compare' Nothing v = Just (v, v)
+    -- Use bang to force strict evaluation.
+    compare' (Just (!prevMin, !prevMax)) v = Just(min v prevMin, max v prevMax)
+
+main :: IO ()
+main = print $ minMax $ sTake 1000000 $ rand 7666532
+```

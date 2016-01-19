@@ -69,14 +69,14 @@ rand seed = Cons next (rand next)
 
 -- Exercise 8 -----------------------------------------
 
-{- Total Memory in use: 223 MB -}
+{- Total Memory in use 223 MB, in 0.627s -}
 minMaxSlow :: [Int] -> Maybe (Int, Int)
 minMaxSlow [] = Nothing   -- no min or max if there are no elements
 minMaxSlow xs = Just (minimum xs, maximum xs)
 
 -- Exercise 9 -----------------------------------------
 
-{- Total Memory in use: 1 MB -}
+{- Total Memory in use 1 MB, in 0.093s -}
 minMax :: [Int] -> Maybe (Int, Int)
 minMax = foldl' compare' Nothing
   where
