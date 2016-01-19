@@ -2,7 +2,7 @@
 
 Learn Haskell by [CIS 194: Introduction to Haskell (Spring 2015)](https://www.seas.upenn.edu/~cis194/) from UPenn. If the URL doesn't work, try [this one](https://www.seas.upenn.edu/~cis194/spring15/).
 
-Following are my notes for each week's lecture notes and homeworks.
+Following are my notes for each week's lectures and homeworks.
 
 ### Week 1: Introduction to Haskell
 
@@ -47,7 +47,7 @@ The homework in this week is interesting - it's to interpret a small imperative 
 2. Desugar statements, such as transforming for-loop to while-loops;
 3. Implement evaluation functions on expressions and statements.
 
-Overall it's still a small assignment (less than 70 LOC in my implementation) but touches some fundamental aspects on programming languages, and also demonstrates the power of Haskell's algebraic data types (in my undergraduate compiler course I used C++ to write a slightly more powerful language like this one and the code serving the same purpose as in this homework has ~900 LOC - I know they are incomparable but this at least could indicate something).
+Overall it's still a small assignment (less than 70 LOC in my implementation) but touches some fundamental aspects on programming languages, and also demonstrates the power of Haskell's algebraic data types (in my undergraduate compiler course I used C++ to write a slightly more powerful language like this one and the code serving the same purpose as in this homework has ~900 LOC - I know they are incomparable but this at least could tell something).
 
 ### Week 4 Type Classes
 
@@ -87,6 +87,16 @@ instance Functor Maybe where
 
 > Note that the type argument to Functor is not quite a type: it's a type constructor. (Or, equivalently, f has kind `* -> *`.)
 > ...You can think of functors as being containers, where it is possible to twiddle the contained bits. The `fmap` operation allows you access to the contained bits, *without* affecting the container... For example, a binary tree might have a Functor instance. You can `fmap` to change the data in the tree, but the tree shape itself would stay the same.
+
+Examples:
+
+```haskell
+-- (<$>) is an infix synonym for fmap.
+show <$> Nothing -- Nothing
+show <$> Just 3  -- Just "3"
+
+(*2) <$> [1,2,3] -- [2, 4, 6]
+```
 
 ******
 The homework is to implement a polynomial type as an instance of `Num`, `Eq` and `Show`, thus it's necessary to define functions like `(==)`, `(+)` and `show` for the new type. Since polynomials have a list of coefficients, **type class constraints** on `newtype Poly a = P [a]` are very important, which is somehow not covered much in the lectures. After finishing it the code seems very easy, but before that I did spend a lot of time fighting with the compiler - sometimes it's about type inference and sometimes the errors are even unintelligible.
