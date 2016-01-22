@@ -118,7 +118,7 @@ select n v
 
 allCards :: Deck
 allCards = [ Card l s | l <- labels, s <- suits ]
--- a clever way of fmap: https://github.com/ROKT-CIS-194/cis-194-homework/blob/52460da5d8d16d56c03f74bb0c990dc33419b92f/src/CIS194/BenS/HW07.hs
+-- A clever way of fmap: https://github.com/ROKT-CIS-194/cis-194-homework/blob/52460da5d8d16d56c03f74bb0c990dc33419b92f/src/CIS194/BenS/HW07.hs
 -- allCards = flip Card <$> suits <*> labels
 
 newDeck :: Rnd Deck

@@ -10,6 +10,7 @@ Following are my notes for each week's lectures and homeworks.
 1. [Type Classes](#week-4-type-classes)
 1. [IO](#week-5-io)
 1. [Lazy Evaluation](#week-6-lazy-evaluation)
+1. [Monads](#week-7-monads)
 
 ### Week 1 Introduction to Haskell
 
@@ -182,3 +183,50 @@ minMax = foldl' compare' Nothing
 main :: IO ()
 main = print $ minMax $ sTake 1000000 $ rand 7666532
 ```
+
+### Week 7 Monads
+
+> Monads are just monoids on the category of endofunctors!
+
+Finally I'm here, confronting the most notorious concept in FP world. 
+
+```haskell
+class Monad m where
+  return :: a -> m a
+
+   -- pronounced "bind"
+  (>>=) :: m a -> (a -> m b) -> m b
+
+  (>>)  :: m a -> m b -> m b
+  m1 >> m2 = m1 >>= \_ -> m2
+```
+
+`m a` is usually called *monadic values* or *computations*, or *actions*, while the type constructor `m` is a monad. For example,
+
+- `c1 :: Maybe a` is a computation which might fail but results in an `a` if it succeeds.
+- `c2 :: [a]` is a computation which results in (multiple) `a`s.
+- `c3 :: Rand StdGen a` is a computation which may use pseudo-randomness and produces an `a`.
+- `c4 :: IO a` is a computation which potentially has some I/O effects and then produces an `a`.
+
+And *bind* `(>>=)` is actually a function which,
+
+> ...will *choose* the next computation to run based on the result(s) of first computation.
+
+The lecture gives examples on some common monads like `[]` and `Maybe`, explains `do` block as syntactic sugar for binds (in which we can write imperative-ish code), introduces useful monad combinators like `sequence` as well as list comprehensions, which could be extended to any monad if using GHC language extension `MonadComprehensions`.
+
+The homework is like a set of monad puzzles - choose the right combinator and everything would be fine; otherwise the code would be long and incomprehensible. It used `Data.Vector` and `Control.Monad.Random`, both are typical monads. 
+
+Anyway, I think the code is worth reading, especially when later I feel hazy about the concepts (which I guess would happen really, really soon... :)
+
+
+
+
+
+
+
+
+
+
+
+
+
