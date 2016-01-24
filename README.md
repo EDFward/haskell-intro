@@ -4,13 +4,14 @@ Learn Haskell by [CIS 194: Introduction to Haskell (Spring 2015)](https://www.se
 
 Following are my notes for each week's lectures and homeworks.
 
-1. [Introduction to Haskell](#week-1-introduction-to-haskell)
-1. [Polymorphism and Functional Programming](#week-2-polymorphism-and-functional-programming)
-1. [Algebraic Data Types](#week-3-algebraic-data-types)
-1. [Type Classes](#week-4-type-classes)
-1. [IO](#week-5-io)
-1. [Lazy Evaluation](#week-6-lazy-evaluation)
-1. [Monads](#week-7-monads)
+1. [Introduction to Haskell](https://github.com/EDFward/haskell-intro#week-1-introduction-to-haskell)
+1. [Polymorphism and Functional Programming](https://github.com/EDFward/haskell-intro#week-2-polymorphism-and-functional-programming)
+1. [Algebraic Data Types](https://github.com/EDFward/haskell-intro#week-3-algebraic-data-types)
+1. [Type Classes](https://github.com/EDFward/haskell-intro#week-4-type-classes)
+1. [IO](https://github.com/EDFward/haskell-intro#week-5-io)
+1. [Lazy Evaluation](https://github.com/EDFward/haskell-intro#week-6-lazy-evaluation)
+1. [Monads](https://github.com/EDFward/haskell-intro#week-7-monads)
+1. [Monads II](https://github.com/EDFward/haskell-intro#week-8-monads-ii)
 
 ### Week 1 Introduction to Haskell
 
@@ -218,12 +219,46 @@ The homework is like a set of monad puzzles - choose the right combinator and ev
 
 Anyway, I think the code is worth reading, especially when later I feel hazy about the concepts (which I guess would happen really, really soon... :)
 
+### Week 8 Monads II
 
+Recall `fmap` of Functors:
 
+```haskell
+fmap :: (a -> b) -> (f a -> f b)
+```
 
+> (It) transforms a "normal" function (`g :: a -> b`) into one which operates over containers/contexts `(fmap g :: f a -> f b)`. This transformation is often referred to as a *lift*; `fmap` "lifts" a function from the "normal world" into the "f world".
 
+Excerpted from [Typeclassopedia](https://wiki.haskell.org/Typeclassopedia).
 
+However if the function we want to *lift* is itself inside the context, `fmap` can no longer help us do the lifting, so `Applicative` class is introduced.
 
+```haskell
+class Functor f => Applicative f where
+  pure :: a -> f a
+  (<*>) :: f (a -> b) -> f a -> f b
+```
+
+For example,
+
+```haskell
+Just (+3) <*> Just 9  -- = Just 12
+pure (+) <*> Just 3 <*> Just 9  -- = Just 12
+-- Or, equivalently,
+(+) <$> Just 3 <*> Just 9
+```
+
+Notice how `Applicative` helps the chaining pattern `pure f <*> x <*> y <*> ...`.
+
+For lists,
+
+```haskell
+(+) <$> [1,2,3] <*> [4,5,6]  -- = [5,6,7,6,7,8,7,8,9]
+```
+
+> (Lists) can be viewed as a computation that can't decide on which result it wants to have, so it presents us with all of the possible results... you can think of it as adding together two non-deterministic computations with +, only to produce another non-deterministic computation that's even less sure about its result.
+
+Excerpted from [Applicative Functors from Learn You a Haskell](http://learnyouahaskell.com/functors-applicative-functors-and-monoids#applicative-functors). Both this and the former excepted passage are well worth reading.
 
 
 
