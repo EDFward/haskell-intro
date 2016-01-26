@@ -12,6 +12,9 @@ Following are my notes for each week's lectures and homeworks.
 1. [Lazy Evaluation](https://github.com/EDFward/haskell-intro#week-6-lazy-evaluation)
 1. [Monads](https://github.com/EDFward/haskell-intro#week-7-monads)
 1. [Monads II](https://github.com/EDFward/haskell-intro#week-8-monads-ii)
+1. Testing *(omitted)*
+1. [GADT](https://github.com/EDFward/haskell-intro#gadt)
+1. Unsafe Haskell *(omitted)*
 
 ### Week 1 Introduction to Haskell
 
@@ -260,7 +263,38 @@ For lists,
 
 Excerpted from [Applicative Functors from Learn You a Haskell](http://learnyouahaskell.com/functors-applicative-functors-and-monoids#applicative-functors). Both this and the former excepted passage are well worth reading.
 
+### <a name="gadt"></a>Week 10 & 11 GADTs
 
+Lecture materials in those two weeks are about some advanced topics in Haskell, like type family, theorem proving, and most importantly, Generalized Algebraic Data Type (GADT).
+
+[Haskell/GADT from wikibooks](https://en.wikibooks.org/wiki/Haskell/GADT) has a great page on it. And `ArithmeticExp.hs` in folder `week11` best illustrates the necessity of GADT, inspired by that article. The easies example is like this:
+
+```haskell
+data Expr = I Int
+          | B Bool           -- boolean constants
+          | Add Expr Expr
+          | Mul Expr Expr
+          | Eq  Expr Expr    -- equality test
+```
+
+In simply typed expressions,  `Add` constructor expects two `Expr`, but there is no way for it to know the *types* of the input expressions (`I` or `B`)! Therefore we have to do the type check manually for evaluations (such as using `Maybe (Either Int Bool)` as the evaluation result).
+
+GADT helps restrict the exact kind of `Expr` to return.
+
+```haskell
+data Expr a where
+    I   :: Int  -> Expr Int
+    B   :: Bool -> Expr Bool
+    Add :: Expr Int -> Expr Int -> Expr Int
+    Mul :: Expr Int -> Expr Int -> Expr Int
+    Eq  :: Expr Int -> Expr Int -> Expr Bool
+```
+
+Think constructor `I` like `Just` in `Maybe`, which is also a function. The difference is that `I` specified the exact type of the input and output, and will fail the type check if mismatch.
+
+> To summarize, GADTs allows us to restrict the return types of constructors and thus enable us to take advantage of Haskell's type system.
+
+[TODO] on STLC.
 
 
 
