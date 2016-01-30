@@ -15,6 +15,7 @@ Following are my notes for each week's lectures and homeworks.
 1. Testing *(omitted)*
 1. [GADT](https://github.com/EDFward/haskell-intro#gadt)
 1. Unsafe Haskell *(omitted)*
+1. [Making Haskell Projects](https://github.com/EDFward/haskell-intro#week-13-making-haskell-projects)
 
 ### Week 1 Introduction to Haskell
 
@@ -294,7 +295,11 @@ Think constructor `I` like `Just` in `Maybe`, which is also a function. The diff
 
 > To summarize, GADTs allows us to restrict the return types of constructors and thus enable us to take advantage of Haskell's type system.
 
-[TODO] on STLC.
+As for the implementation of Simply Typed Lambda Calculus, I'm not sure I've understood it correctly, nevertheless the [code is here](https://github.com/EDFward/haskell-intro/blob/master/week11/Stlc.hs) and worth a look.
+
+### Week 13 Making Haskell Projects
+
+The final week is on some minutiae about building Haskell projects using Cabal, which also includes adding test suites and documentation (Haddock). Will check out later.
 
 
 
